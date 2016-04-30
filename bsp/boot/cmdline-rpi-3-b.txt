@@ -1,0 +1,1 @@
+dwc_otg.lpm_enable=0 console=serial0,115200n8 console=ttyS0 noinitrd rootwait init=/init elevator=deadline androidboot.hardware=rpi androidboot.selinux=permissive androidboot.disk.boot=/dev/block/mmcblk0p5 androidboot.disk.system=/dev/block/mmcblk0p6 androidboot.disk.data=/dev/block/mmcblk0p7

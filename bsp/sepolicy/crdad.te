@@ -1,0 +1,22 @@
+# crdad.
+type crdad, domain;
+type crdad_exec, exec_type, file_type;
+
+brillo_domain(crdad)
+net_domain(crdad)
+
+# Allow crash_reporter access to core dump files.
+allow_crash_reporter(crdad)
+
+allow crdad self:capability { net_admin net_raw };
+allow crdad self:rawip_socket create_socket_perms;
+
+allow crdad system_file:file rx_file_perms;
+allow crdad system_file:dir { open read };
+
+r_dir_file(crdad, proc)
+allow crdad proc:filesystem getattr;
+allow crdad proc_net:file { getattr open read };
+
+allow crdad self:netlink_kobject_uevent_socket { bind create read setopt };
+allow crdad self:netlink_socket { bind create getattr read setopt write };
