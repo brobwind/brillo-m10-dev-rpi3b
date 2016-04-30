@@ -9,3 +9,6 @@
 
 # CRDA files
 /system/bin/crdad           u:object_r:crdad_exec:s0
+
+# fastbootd
+/system/bin/fastbootd       u:object_r:fastbootd_exec:s0

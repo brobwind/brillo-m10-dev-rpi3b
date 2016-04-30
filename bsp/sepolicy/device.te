@@ -1,1 +1,14 @@
 type mmc_block_device, dev_type;
+
+#init
+allow init vfat:file { open read };
+allow init recovery:process { noatsecure rlimitinh siginh transition };
+
+#recovery
+allow recovery config_prop:property_service set;
+allow recovery init:unix_stream_socket connectto;
+allow recovery property_socket:sock_file write;
+allow recovery rootfs:dir mounton;
+allow recovery shell_exec:file { entrypoint read };
+allow recovery tmpfs:filesystem mount;
+allow recovery toolbox_exec:file { execute execute_no_trans getattr open read };

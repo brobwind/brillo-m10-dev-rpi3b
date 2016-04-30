@@ -1,1 +1,0 @@
-ramdisk_size=32768 dwc_otg.lpm_enable=0 console=ttyAMA0,115200 noinitrd rootwait init=/init elevator=deadline androidboot.hardware=rpi androidboot.selinux=permissive androidboot.disk.boot=/dev/block/mmcblk0p1 androidboot.disk.system=/dev/block/mmcblk0p2 androidboot.disk.data=/dev/block/mmcblk0p3

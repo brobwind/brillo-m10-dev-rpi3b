@@ -35,6 +35,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     tinyplay tinypcminfo tinymix tinycap
 
+# fastbootd
+PRODUCT_PACKAGES += \
+	fastbootd
+
 # Wifi hal module
 PRODUCT_PACKAGES += \
 	wifi_driver.rpi

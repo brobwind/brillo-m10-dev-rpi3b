@@ -21,16 +21,23 @@ on init
     # /dev/block/by-name so that we can use the same fstabs everywhere.
     mkdir /boot 0700 root root
     mkdir /dev/block/by-name 0700 root root
+
+on fs
+    mount vfat ${ro.boot.disk.boot} /boot rw noatime
+    mount ext4 loop@/boot/system.img /system ro
+    exec u:r:recovery:s0 root root -- /system/bin/sh -e -x -c \
+    "
+        /system/bin/mount -o ro,remount /dev/block/mmcblk0p1 /boot
+        /system/bin/mount -t tmpfs -o size=512M tmpfs /data
+        /system/bin/setprop ro.config.mode rpi.recovery
+    "
+
     symlink ${ro.boot.disk.boot} /dev/block/by-name/boot
     symlink ${ro.boot.disk.system} /dev/block/by-name/system
     symlink ${ro.boot.disk.data} /dev/block/by-name/data
 
-    chown system root /dev/watchdog
-    # Make system reboot to Brillo system
-    write /sys/module/bcm2709/parameters/reboot_part 5
-
-on fs
-    mount_all /fstab.${ro.hardware}
+    setprop ro.config.mode rpi
+    mount_all /fstab.${ro.config.mode}
 
 service watchdogd /sbin/watchdogd
     user system

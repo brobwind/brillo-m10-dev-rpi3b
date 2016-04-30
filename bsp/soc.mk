@@ -27,7 +27,9 @@ TARGET_KERNEL_ARCH := $(TARGET_ARCH)
 # Do not build recovery image
 TARGET_NO_RECOVERY := true
 TARGET_NO_BOOTLOADER := true
-TARGET_NO_KERNEL := false
+TARGET_NO_KERNEL := true
+
+TARGET_BOOTLOADER_BOARD_NAME := rpi3b
 
 BOARD_KERNEL_CMDLINE := \
 	dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 \
@@ -45,22 +47,25 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 	adbd-setup.autostart=1 \
 	service.adb.tcp.port=5555
 
-# For recovery boot partition
+# For Brillo recovery partition
 PRODUCT_COPY_FILES += \
-	$(LOCAL_PATH)/boot/LICENCE.broadcom:rboot/LICENCE.broadcom \
-	$(LOCAL_PATH)/boot/COPYING.linux:rboot/COPYING.linux \
-	$(LOCAL_PATH)/boot/bootcode.bin:rboot/bootcode.bin \
-	$(LOCAL_PATH)/boot/recovery.elf:rboot/recovery.elf \
-	$(LOCAL_PATH)/boot/recovery.cmdline:rboot/recovery.cmdline
+	$(LOCAL_PATH)/boot/LICENCE.broadcom:recovery/LICENCE.broadcom \
+	$(LOCAL_PATH)/boot/COPYING.linux:recovery/COPYING.linux \
+	$(LOCAL_PATH)/boot/bootcode.bin:recovery/bootcode.bin \
+	$(LOCAL_PATH)/boot/start.elf:recovery/start.elf \
+	$(LOCAL_PATH)/boot/fixup.dat:recovery/fixup.dat \
+	$(LOCAL_PATH)/boot/recovery-config.txt:recovery/config.txt \
+	$(LOCAL_PATH)/boot/recovery-rpi-2-b.txt:recovery/recovery-rpi-2-b.txt \
+	$(LOCAL_PATH)/boot/recovery-rpi-3-b.txt:recovery/recovery-rpi-3-b.txt
 
 # For Brillo boot partition
 PRODUCT_COPY_FILES += \
 	$(LOCAL_PATH)/boot/LICENCE.broadcom:boot/LICENCE.broadcom \
 	$(LOCAL_PATH)/boot/COPYING.linux:boot/COPYING.linux \
 	$(LOCAL_PATH)/boot/bootcode.bin:boot/bootcode.bin \
-	$(LOCAL_PATH)/boot/config.txt:boot/config.txt \
 	$(LOCAL_PATH)/boot/start.elf:boot/start.elf \
 	$(LOCAL_PATH)/boot/fixup.dat:boot/fixup.dat \
+	$(LOCAL_PATH)/boot/config.txt:boot/config.txt \
 	$(LOCAL_PATH)/boot/cmdline-rpi-2-b.txt:boot/cmdline-rpi-2-b.txt \
 	$(LOCAL_PATH)/boot/cmdline-rpi-3-b.txt:boot/cmdline-rpi-3-b.txt
 
@@ -68,7 +73,8 @@ PRODUCT_COPY_FILES += \
 	system/core/rootdir/ueventd.rc:root/ueventd.rc \
 	$(LOCAL_PATH)/init.rpi.rc:root/init.rpi.rc \
 	$(LOCAL_PATH)/ueventd.rpi.rc:root/ueventd.rpi.rc \
-	$(LOCAL_PATH)/fstab.device:root/fstab.rpi
+	$(LOCAL_PATH)/fstab.rpi:root/fstab.rpi \
+	$(LOCAL_PATH)/fstab.rpi.recovery:root/fstab.rpi.recovery
 
 # BCM wifi
 WIFI_DRIVER_HAL_MODULE := wifi_driver.rpi

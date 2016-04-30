@@ -1,0 +1,12 @@
+on post-fs-data
+    mkdir /data/misc/fastbootd 0700 root root
+    mkdir /data/misc/fastbootd/mnt 0700 root root
+
+on property:ro.boot.mode=recovery
+    start fastbootd
+
+service fastbootd /system/bin/fastbootd
+    user root
+    group root
+    disabled
+    seclabel u:r:su:s0

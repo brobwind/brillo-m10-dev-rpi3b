@@ -14,13 +14,15 @@
 
 LOCAL_PATH := $(call my-dir)
 
+ifneq (,$(filter true, $(TARGET_NO_KERNEL) $(TARGET_NO_RECOVERY)))
+
 RPI_KERNEL_DTBS := \
 	bcm2709-rpi-2-b.dtb \
 	bcm2710-rpi-3-b.dtb
 
-RPI_RECOVERY_OUT		:= $(PRODUCT_OUT)/rboot
-RPI_RECOVERY_KERNEL		:= $(RPI_RECOVERY_OUT)/recovery7.img
-RPI_RECOVERY_RAMDISK	:= $(RPI_RECOVERY_OUT)/recovery.rfs
+RPI_RECOVERY_OUT		:= $(PRODUCT_OUT)/recovery
+RPI_RECOVERY_KERNEL		:= $(RPI_RECOVERY_OUT)/kernel7.img
+RPI_RECOVERY_RAMDISK	:= $(RPI_RECOVERY_OUT)/ramdisk7.img
 RPI_RECOVERY_FILES		:= \
 	$(filter $(RPI_RECOVERY_OUT)/%,$(ALL_PREBUILT) $(ALL_DEFAULT_INSTALLED_MODULES)) \
 	$(addprefix $(RPI_RECOVERY_OUT)/,$(RPI_KERNEL_DTBS)) \
@@ -44,10 +46,22 @@ endef
 
 $(foreach item,$(RPI_KERNEL_DTBS),$(eval $(call build-rpi3b-kernel-dtb,$(item))))
 
-$(RPI_RECOVERY_KERNEL) $(RPI_BOOT_KERNEL): $(INSTALLED_KERNEL_TARGET) | $(ACP)
+$(RPI_RECOVERY_KERNEL) $(RPI_BOOT_KERNEL): $(PRODUCT_OUT)/kernel | $(ACP)
 	$(hide)$(ACP) -fp $< $@
 
 $(RPI_RECOVERY_RAMDISK) $(RPI_BOOT_RAMDISK): $(INSTALLED_RAMDISK_TARGET) | $(ACP)
 	$(hide)$(ACP) -fp $< $@
 
-$(INSTALLED_BOOTIMAGE_TARGET) bootimage-nodeps: $(RPI_RECOVERY_FILES) $(RPI_BOOT_FILES)
+RPI_BOOT_IMG := $(PRODUCT_OUT)/boot.img
+$(RPI_BOOT_IMG): $(RPI_BOOT_FILES)
+	$(hide)if [ -f $@ ] ; then rm $@ ; fi
+	$(hide)echo "Target boot image: $@"
+	$(hide)cd $(PRODUCT_OUT)/boot; tar --no-recursion --numeric-owner --owner 0 --group 0 --mode 0600 \
+			-p -rf ../$(notdir $@) $(patsubst $(PRODUCT_OUT)/boot/%,%,$(RPI_BOOT_FILES))
+
+.PHONY: rpi3b-bootimage-nodeps
+rpi3b-bootimage-nodeps: $(RPI_BOOT_IMG)
+
+droid: $(RPI_RECOVERY_FILES) rpi3b-bootimage-nodeps
+
+endif
